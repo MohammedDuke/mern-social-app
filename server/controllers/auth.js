@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
 // Register Function
-export const regsiter = async (req, res) => {
+export const register = async (req, res) => {
   try {
     const { firstName, lastName, email, password, location, occupation } =
       req.body;
@@ -35,7 +35,7 @@ export const login = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ msg: "User Not Found" });
 
-    const isMatch = bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "invalid Credentials" });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);

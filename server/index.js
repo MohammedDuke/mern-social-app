@@ -8,6 +8,8 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+import authRoutes from "./routes/auth.js";
+import { regsiter } from "./controllers/auth.js";
 
 // CONFIGURATIONS
 
@@ -34,3 +36,23 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+// ROUTES
+app.post("/auth/register", upload.single("picture"), regsiter);
+
+// ROUTER
+app.use("/auth", authRoutes);
+
+// SETUP MONGODB AND EXPRESS SERVER
+const PORT = process.env.PORT || 6001;
+const server = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URL);
+    app.listen(PORT, () =>
+      console.log(`Server is Runing in http://localhost:${PORT}`)
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+server();

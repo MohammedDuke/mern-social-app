@@ -55,7 +55,55 @@ const Form = () => {
   const isLogin = pageType === "login";
   const isRegister = pageType === "register";
 
-  const handleFormSubmit = async (values, onSubmitProps) => {};
+  const register = async (values, onSubmitProps) => {
+    const formData = new FormData();
+
+    for (let value in values) {
+      formData.append(value, values[value]);
+    }
+
+    formData.append("picturePath", values.picture.name);
+
+    const savedUserResponse = await fetch(
+      "http://locathost:3001/auth/register",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+    const savedUser = await savedUserResponse.json();
+
+    onSubmitProps.resetForm();
+
+    if (savedUser) {
+      setPageType("register");
+    }
+  };
+  const login = async (values, onSubmitProps) => {
+    const loggedInResponse = await fetch("http://locathost:3001/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+
+      body: JSON.stringify(values),
+    });
+    const loggedIn = await loggedInResponse.json();
+    onSubmitProps.resetForm();
+
+    if (loggedIn) {
+      dispatch(
+        setLogin({
+          user: loggedIn.user,
+          token: loggedIn.token,
+        })
+      );
+      navigate("/home");
+    }
+  };
+
+  const handleFormSubmit = async (values, onSubmitProps) => {
+    if (isLogin) await login(values, onSubmitProps);
+    if (isRegister) await register(values, onSubmitProps);
+  };
 
   return (
     <Formik
@@ -63,7 +111,7 @@ const Form = () => {
       initialValues={isLogin ? initialValuesLogin : initialValuesRegister}
       validationSchema={isLogin ? loginScheme : registerScheme}
     >
-      {(
+      {({
         values,
         errors,
         touched,
@@ -71,8 +119,8 @@ const Form = () => {
         handleChange,
         handleSubmit,
         setFieldValue,
-        resetForm
-      ) => (
+        resetForm,
+      }) => (
         <form onSubmit={handleSubmit}>
           <Box
             display="grid"
@@ -95,7 +143,7 @@ const Form = () => {
                   }
                   helperText={touched.firstName && errors.firstName}
                   sx={{ gridColumn: "span 2" }}
-                ></TextField>
+                />
                 <TextField
                   label="Last Name"
                   onBlur={handleBlur}
@@ -105,7 +153,7 @@ const Form = () => {
                   error={Boolean(touched.lastName) && Boolean(errors.lastName)}
                   helperText={touched.lastName && errors.lastName}
                   sx={{ gridColumn: "span 2" }}
-                ></TextField>
+                />
                 <TextField
                   label="Location"
                   onBlur={handleBlur}
@@ -115,7 +163,7 @@ const Form = () => {
                   error={Boolean(touched.location) && Boolean(errors.location)}
                   helperText={touched.location && errors.location}
                   sx={{ gridColumn: "span 4" }}
-                ></TextField>
+                />
                 <TextField
                   label="Occupation"
                   onBlur={handleBlur}
@@ -127,7 +175,7 @@ const Form = () => {
                   }
                   helperText={touched.occupation && errors.occupation}
                   sx={{ gridColumn: "span 4" }}
-                ></TextField>
+                />
                 <Box
                   gridColumn="span 4"
                   border={`1px solid ${palette.neutral.medium}`}
@@ -138,7 +186,7 @@ const Form = () => {
                     accpetedFile=".jpg,.jpeg,.png"
                     multiple={false}
                     onDrop={(accpetedFile) =>
-                      setFieldValue("picture".accpetedFile[0])
+                      setFieldValue("picture", accpetedFile[0])
                     }
                   >
                     {({ getRootProps, getInputProps }) => (
@@ -163,6 +211,7 @@ const Form = () => {
                 </Box>
               </>
             )}
+
             <TextField
               label="Email"
               onBlur={handleBlur}
@@ -172,7 +221,7 @@ const Form = () => {
               error={Boolean(touched.email) && Boolean(errors.email)}
               helperText={touched.email && errors.email}
               sx={{ gridColumn: "span 4" }}
-            ></TextField>
+            />
             <TextField
               label="Password"
               type="password"
@@ -183,7 +232,7 @@ const Form = () => {
               error={Boolean(touched.password) && Boolean(errors.password)}
               helperText={touched.password && errors.password}
               sx={{ gridColumn: "span 4 " }}
-            ></TextField>
+            />
           </Box>
           {/* Button */}
           <Box>

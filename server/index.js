@@ -50,7 +50,7 @@ app.post("/posts", verifyToken, upload.single("picture"), createPost);
 
 // ROUTER
 app.use("/auth", authRoutes);
-app.use("/user", userRoutes);
+app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
 
 // SETUP MONGODB AND EXPRESS SERVER

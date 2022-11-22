@@ -10,6 +10,7 @@ export const getUser = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
+
 export const getUserFriends = async (req, res) => {
   try {
     const { id } = req.params;

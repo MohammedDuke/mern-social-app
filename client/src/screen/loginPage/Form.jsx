@@ -1,12 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import Dropzone from "react-dropzone";
-import { setLogin } from "reducer";
-import * as yup from "yup";
-import { Formik } from "formik";
-import FlexBetween from "components/FlexBetween";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import {
   Box,
   Button,
@@ -15,20 +7,28 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import { Formik } from "formik";
+import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setLogin } from "reducer";
+import Dropzone from "react-dropzone";
+import FlexBetween from "components/FlexBetween";
 
-const registerScheme = yup.object().shape({
-  firstName: yup.string().required("Required"),
-  lastName: yup.string().required("Required"),
-  email: yup.string().email("invalid Email").required("Required"),
-  password: yup.string().required("Required"),
-  location: yup.string().required("Required"),
-  occupation: yup.string().required("Required"),
-  picture: yup.string().required("Required"),
+const registerSchema = yup.object().shape({
+  firstName: yup.string().required("required"),
+  lastName: yup.string().required("required"),
+  email: yup.string().email("invalid email").required("required"),
+  password: yup.string().required("required"),
+  location: yup.string().required("required"),
+  occupation: yup.string().required("required"),
+  picture: yup.string().required("required"),
 });
 
-const loginScheme = yup.object().shape({
-  email: yup.string().email("invalid Email").required("Required"),
-  password: yup.string().required("Required"),
+const loginSchema = yup.object().shape({
+  email: yup.string().email("invalid email").required("required"),
+  password: yup.string().required("required"),
 });
 
 const initialValuesRegister = {
@@ -56,39 +56,36 @@ const Form = () => {
   const isRegister = pageType === "register";
 
   const register = async (values, onSubmitProps) => {
+    // this allows us to send form info with image
     const formData = new FormData();
-
     for (let value in values) {
       formData.append(value, values[value]);
     }
-
     formData.append("picturePath", values.picture.name);
 
     const savedUserResponse = await fetch(
-      "http://locathost:3001/auth/register",
+      "http://localhost:3001/auth/register",
       {
         method: "POST",
         body: formData,
       }
     );
     const savedUser = await savedUserResponse.json();
-
     onSubmitProps.resetForm();
 
     if (savedUser) {
-      setPageType("register");
+      setPageType("login");
     }
   };
+
   const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch("http://locathost:3001/auth/login", {
+    const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-
       body: JSON.stringify(values),
     });
     const loggedIn = await loggedInResponse.json();
     onSubmitProps.resetForm();
-
     if (loggedIn) {
       dispatch(
         setLogin({
@@ -109,7 +106,7 @@ const Form = () => {
     <Formik
       onSubmit={handleFormSubmit}
       initialValues={isLogin ? initialValuesLogin : initialValuesRegister}
-      validationSchema={isLogin ? loginScheme : registerScheme}
+      validationSchema={isLogin ? loginSchema : registerSchema}
     >
       {({
         values,
@@ -183,22 +180,22 @@ const Form = () => {
                   p="1rem"
                 >
                   <Dropzone
-                    accpetedFile=".jpg,.jpeg,.png"
+                    acceptedFiles=".jpg,.jpeg,.png"
                     multiple={false}
-                    onDrop={(accpetedFile) =>
-                      setFieldValue("picture", accpetedFile[0])
+                    onDrop={(acceptedFiles) =>
+                      setFieldValue("picture", acceptedFiles[0])
                     }
                   >
                     {({ getRootProps, getInputProps }) => (
                       <Box
                         {...getRootProps()}
-                        p="1rem"
                         border={`2px dashed ${palette.primary.main}`}
-                        sx={{ "& :hover": { cursor: "pointer" } }}
+                        p="1rem"
+                        sx={{ "&:hover": { cursor: "pointer" } }}
                       >
                         <input {...getInputProps()} />
                         {!values.picture ? (
-                          <p>Add Picture Here </p>
+                          <p>Add Picture Here</p>
                         ) : (
                           <FlexBetween>
                             <Typography>{values.picture.name}</Typography>
@@ -231,10 +228,11 @@ const Form = () => {
               name="password"
               error={Boolean(touched.password) && Boolean(errors.password)}
               helperText={touched.password && errors.password}
-              sx={{ gridColumn: "span 4 " }}
+              sx={{ gridColumn: "span 4" }}
             />
           </Box>
-          {/* Button */}
+
+          {/* BUTTONS */}
           <Box>
             <Button
               fullWidth
@@ -247,7 +245,7 @@ const Form = () => {
                 "&:hover": { color: palette.primary.main },
               }}
             >
-              {isLogin ? "LOGIN" : "REGISTER "}
+              {isLogin ? "LOGIN" : "REGISTER"}
             </Button>
             <Typography
               onClick={() => {
@@ -263,7 +261,9 @@ const Form = () => {
                 },
               }}
             >
-              {isLogin ? "Dont Have Account" : "Already Have an account"}
+              {isLogin
+                ? "Don't have an account? Sign Up here."
+                : "Already have an account? Login here."}
             </Typography>
           </Box>
         </form>

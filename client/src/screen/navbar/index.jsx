@@ -40,7 +40,7 @@ const Navbar = () => {
   const { light: neutralLight, dark } = theme.palette.neutral;
   const { default: background, alt } = theme.palette.background;
 
-  // const fullName = `${user.firstName} ${user.lastName}` ? "fizo" : "duke";
+  const fullName = `${user.firstName} ${user.lastName}`;
 
   return (
     <FlexBetween padding="1rem 6%" backgroundColor={alt}>
@@ -86,9 +86,9 @@ const Navbar = () => {
           <Message sx={{ fontSize: "25px" }} />
           <Notifications sx={{ fontSize: "25px" }} />
           <Help sx={{ fontSize: "25px" }} />
-          <FormControl variant="standard" value="needvalue">
+          <FormControl variant="standard" value={fullName}>
             <Select
-              value="needvalue"
+              value={fullName}
               sx={{
                 backgroundColor: neutralLight,
                 width: "150px",
@@ -104,8 +104,8 @@ const Navbar = () => {
               }}
               input={<InputBase />}
             >
-              <MenuItem value="needvalue">
-                <Typography>needvalue</Typography>
+              <MenuItem value={fullName}>
+                <Typography>{fullName}</Typography>
               </MenuItem>
               <MenuItem onClick={() => dispatch(setLogout())}>Log Out</MenuItem>
             </Select>
@@ -158,9 +158,9 @@ const Navbar = () => {
             <Message sx={{ fontSize: "25px" }} />
             <Notifications sx={{ fontSize: "25px" }} />
             <Help sx={{ fontSize: "25px" }} />
-            <FormControl variant="standard" value="needvalue">
+            <FormControl variant="standard" value={fullName}>
               <Select
-                value="needvalue"
+                value={fullName}
                 sx={{
                   backgroundColor: neutralLight,
                   width: "150px",
@@ -176,8 +176,8 @@ const Navbar = () => {
                 }}
                 input={<InputBase />}
               >
-                <MenuItem value="needvalue">
-                  <Typography>needvalue</Typography>
+                <MenuItem value={fullName}>
+                  <Typography>{fullName}</Typography>
                 </MenuItem>
                 <MenuItem onClick={() => dispatch(setLogout())}>
                   Log Out

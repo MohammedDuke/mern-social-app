@@ -7,7 +7,7 @@ import PostsWidget from "screen/widgets/PostsWidget";
 
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
-  console.log(isNonMobileScreens);
+
   const { _id, picturePath } = useSelector((state) => state.user);
 
   return (
@@ -30,7 +30,13 @@ const HomePage = () => {
           <MyPostWidget picturePath={picturePath} />
           <PostsWidget userId={_id} />
         </Box>
-        <Box>{isNonMobileScreens && <Box flexBasis="26%"> Test</Box>}</Box>
+        {isNonMobileScreens && (
+          <Box flexBasis="26%">
+            {/* <AdvertWidget /> */}
+            <Box m="2rem 0" />
+            {/* <FriendListWidget userId={_id} /> */}
+          </Box>
+        )}
       </Box>
     </Box>
   );
